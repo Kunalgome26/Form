@@ -1,1 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Kiran Enterprises Invoice</title>
 
+<style>
+@page {
+    size: A4;
+    margin: 8mm;
+}
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+.invoice {
+    width: 850px;
+    margin: auto;
+    padding-bottom: 60px;
+}
+
+/* HEADER */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo img {
+    width: 110px;
+}
+
+.company {
+    flex: 1;
+    padding-left: 10px;
+}
+
+.company h2 {
+    margin: 0;
+}
+
+.contact {
+    text-align: right;
+    font-size: 13px;
+}
+
+/* TOP */
+.top {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+/* INPUT */
+input {
+    border: none;
+    border-bottom: 1px solid black;
+    outline: none;
+    width: 100%;
+    font-size: 13px;
+}
+
+/* TEXTAREA */
+textarea {
+    width: 100%;
+    border: none;
+    outline: none;
+    resize: none;
+    overflow: hidden;
+    font-size: 13px;
+    font-family: Arial;
+}
+
+/* TABLE */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    border: 1px solid black;
+    padding: 5px;
+    text-align: center;
+}
+
+th {
+    background: #dcdcdc;
+}
+
+/* TOTAL BOX */
+.total-box {
+    width: 220px;
+    border: 1px solid black;
+    padding: 8px;
+    margin-top: 10px;
+}
+
+/* FOOTER */
+.footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+}
+
+.signature {
+    text-align: right;
+}
+
+/* BLACK FOOTER BAR */
+.bottom-bar {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 850px;
+    background: black;
+    color: white;
+    padding: 8px;
+    font-size: 18px;
+    text-align: center;
+
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
+/* BUTTON */
+button {
+    margin-top: 10px;
+}
+
+@media print {
+    button {
+        display: none;
+    }
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="invoice">
+
+<!-- HEADER -->
+<div class="header">
+    <div class="logo">
+        <img src="logo.jpg">
+    </div>
+
+    <div class="company">
+        <h2>KIRAN ENTERPRISES</h2>
+    </div>
+
+    <div class="contact">
+        📞 9850144851<br>
+        Shivraj Colony, Sandeep Nagar,<br>
+        Thergaon, Pune - 33<br>
+        GST No : 27AKGPG2671R1ZM
+    </div>
+</div>
+
+<!-- TOP -->
+<div class="top">
+    <div>
+        Messrs : <input type="text">
+    </div>
+
+    <div>
+        Date : <input type="date"><br><br>
+        No. Invoice : <input type="text">
+    </div>
+</div>
+
+<!-- TABLE -->
+<table id="table">
+<tr>
+<th>Sr No.</th>
+<th>Item Description</th>
+<th>Price</th>
+<th>Qty</th>
+<th>Total</th>
+</tr>
+</table>
+
+<!-- TOTAL -->
+<div class="total-box">
+    Total : ₹ <input type="text">
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+    <div>
+        CUSTOMER SIGNATURE :
+    </div>
+
+    <div class="signature">
+        <b>KIRAN ENTERPRISES</b><br>
+        Proprietor : Kisan Ajinath Gome
+    </div>
+</div>
+
+<button onclick="addRow()">+ Add Row</button>
+<button onclick="window.print()">Print</button>
+
+</div>
+
+<!-- BLACK STRIP -->
+<div class="bottom-bar">
+    • All types of tiles work, bathroom, toilet, kitchen platform, marble, kitchen modulars are undertaken at reasonable rates with guaranteed quality.
+</div>
+
+<script>
+let count = 0;
+
+function addRow() {
+    count++;
+
+    let table = document.getElementById("table");
+    let row = table.insertRow();
+
+    row.innerHTML = `
+        <td>${count}</td>
+        <td><textarea rows="1" oninput="autoResize(this)"></textarea></td>
+        <td><input type="text"></td>
+        <td><input type="text"></td>
+        <td><input type="text"></td>
+    `;
+}
+
+function autoResize(el) {
+    el.style.height = "auto";
+    el.style.height = (el.scrollHeight) + "px";
+}
+
+/* First row */
+addRow();
+</script>
+
+</body>
+</html>
