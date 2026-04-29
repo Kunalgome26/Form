@@ -5,6 +5,7 @@
 <title>Kiran Enterprises Invoice</title>
 
 <style>
+
 @page {
     size: A4;
     margin: 8mm;
@@ -12,15 +13,19 @@
 
 body {
     font-family: Arial, sans-serif;
+    background: #f5f5f5;
 }
 
 .invoice {
     width: 850px;
     margin: auto;
-    padding-bottom: 60px;
+    background: white;
+    padding: 15px;
+    padding-bottom: 70px;
 }
 
 /* HEADER */
+
 .header {
     display: flex;
     align-items: center;
@@ -38,6 +43,7 @@ body {
 
 .company h2 {
     margin: 0;
+    font-size: 24px;
 }
 
 .contact {
@@ -46,22 +52,26 @@ body {
 }
 
 /* TOP */
+
 .top {
     display: flex;
     justify-content: space-between;
-    margin-top: 20px;
+    margin-top: 15px;
 }
 
 /* INPUT */
+
 input {
     border: none;
     border-bottom: 1px solid black;
     outline: none;
     width: 100%;
     font-size: 13px;
+    background: transparent;
 }
 
 /* TEXTAREA */
+
 textarea {
     width: 100%;
     border: none;
@@ -70,9 +80,11 @@ textarea {
     overflow: hidden;
     font-size: 13px;
     font-family: Arial;
+    background: transparent;
 }
 
 /* TABLE */
+
 table {
     width: 100%;
     border-collapse: collapse;
@@ -90,6 +102,7 @@ th {
 }
 
 /* TOTAL BOX */
+
 .total-box {
     width: 220px;
     border: 1px solid black;
@@ -98,6 +111,7 @@ th {
 }
 
 /* FOOTER */
+
 .footer {
     display: flex;
     justify-content: space-between;
@@ -108,7 +122,8 @@ th {
     text-align: right;
 }
 
-/* BLACK FOOTER BAR */
+/* BLACK BAR */
+
 .bottom-bar {
     position: fixed;
     bottom: 0;
@@ -126,17 +141,45 @@ th {
 }
 
 /* BUTTON */
+
 button {
     margin-top: 10px;
+    padding: 8px 14px;
+    cursor: pointer;
 }
+
+/* HISTORY */
+
+#historyBox {
+    display: none;
+    background: white;
+    border: 1px solid black;
+    padding: 15px;
+    margin: 20px auto;
+    width: 850px;
+}
+
+.history-card {
+    border: 1px solid gray;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+/* PRINT */
 
 @media print {
-    button {
-        display: none;
+
+    body {
+        background: white;
+    }
+
+    button,
+    #historyBox {
+        display: none !important;
     }
 }
-</style>
 
+</style>
 </head>
 
 <body>
@@ -144,7 +187,9 @@ button {
 <div class="invoice">
 
 <!-- HEADER -->
+
 <div class="header">
+
     <div class="logo">
         <img src="logo.jpg">
     </div>
@@ -159,38 +204,54 @@ button {
         Thergaon, Pune - 33<br>
         GST No : 27AKGPG2671R1ZM
     </div>
+
 </div>
 
 <!-- TOP -->
+
 <div class="top">
+
     <div>
-        Messrs : <input type="text">
+        Messrs :
+        <input type="text" id="messrsInput">
     </div>
 
     <div>
-        Date : <input type="date"><br><br>
-        No. Invoice : <input type="text">
+        Date :
+        <input type="date" id="dateInput">
+        <br><br>
+
+        No. Invoice :
+        <input type="text" id="invoiceInput">
     </div>
+
 </div>
 
 <!-- TABLE -->
+
 <table id="table">
+
 <tr>
-<th>Sr No.</th>
-<th>Item Description</th>
-<th>Price</th>
-<th>Qty</th>
-<th>Total</th>
+    <th>Sr No.</th>
+    <th>Item Description</th>
+    <th>Price</th>
+    <th>Qty</th>
+    <th>Total</th>
 </tr>
+
 </table>
 
 <!-- TOTAL -->
+
 <div class="total-box">
-    Total : ₹ <input type="text">
+    Total : ₹
+    <input type="text" id="grandTotal">
 </div>
 
 <!-- FOOTER -->
+
 <div class="footer">
+
     <div>
         CUSTOMER SIGNATURE :
     </div>
@@ -199,43 +260,291 @@ button {
         <b>KIRAN ENTERPRISES</b><br>
         Proprietor : Kisan Ajinath Gome
     </div>
+
 </div>
 
 <button onclick="addRow()">+ Add Row</button>
+
+<button onclick="saveInvoice()">Save Invoice</button>
+
+<button onclick="showHistory()">History</button>
+
 <button onclick="window.print()">Print</button>
+
+<button onclick="clearCurrent()">Clear Current</button>
 
 </div>
 
-<!-- BLACK STRIP -->
+<!-- HISTORY -->
+
+<div id="historyBox">
+
+    <h3>Invoice History</h3>
+
+    <div id="historyList"></div>
+
+</div>
+
+<!-- BLACK FOOTER BAR -->
+
 <div class="bottom-bar">
-    • All types of tiles work, bathroom, toilet, kitchen platform, marble, kitchen modulars are undertaken at reasonable rates with guaranteed quality.
+• All types of tiles work, bathroom, toilet, kitchen platform, marble, kitchen modulars are undertaken at reasonable rates with guaranteed quality.
 </div>
 
 <script>
+
 let count = 0;
 
-function addRow() {
+/* ADD ROW */
+
+function addRow(data = {}) {
+
     count++;
 
     let table = document.getElementById("table");
+
     let row = table.insertRow();
 
     row.innerHTML = `
+
         <td>${count}</td>
-        <td><textarea rows="1" oninput="autoResize(this)"></textarea></td>
-        <td><input type="text"></td>
-        <td><input type="text"></td>
-        <td><input type="text"></td>
+
+        <td>
+            <textarea rows="1"
+            oninput="autoResize(this)">${data.desc || ""}</textarea>
+        </td>
+
+        <td>
+            <input type="text"
+            value="${data.price || ""}">
+        </td>
+
+        <td>
+            <input type="text"
+            value="${data.qty || ""}">
+        </td>
+
+        <td>
+            <input type="text"
+            value="${data.total || ""}">
+        </td>
     `;
 }
 
+/* AUTO RESIZE */
+
 function autoResize(el) {
+
     el.style.height = "auto";
-    el.style.height = (el.scrollHeight) + "px";
+
+    el.style.height = el.scrollHeight + "px";
 }
 
-/* First row */
+/* SAVE OR UPDATE */
+
+function saveInvoice() {
+
+    let rows = [];
+
+    document.querySelectorAll("#table tr").forEach((row, i) => {
+
+        if(i === 0) return;
+
+        rows.push({
+
+            desc:
+            row.cells[1].querySelector("textarea").value,
+
+            price:
+            row.cells[2].querySelector("input").value,
+
+            qty:
+            row.cells[3].querySelector("input").value,
+
+            total:
+            row.cells[4].querySelector("input").value
+        });
+
+    });
+
+    let invoice = {
+
+        messrs:
+        document.getElementById("messrsInput").value,
+
+        date:
+        document.getElementById("dateInput").value,
+
+        invoiceNo:
+        document.getElementById("invoiceInput").value,
+
+        grandTotal:
+        document.getElementById("grandTotal").value,
+
+        rows: rows
+    };
+
+    let history =
+    JSON.parse(localStorage.getItem("invoiceHistory")) || [];
+
+    /* CHECK EXISTING */
+
+    let existingIndex = history.findIndex(item =>
+        item.invoiceNo === invoice.invoiceNo
+    );
+
+    if(existingIndex !== -1) {
+
+        history[existingIndex] = invoice;
+
+        alert("Invoice Updated!");
+
+    } else {
+
+        history.push(invoice);
+
+        alert("Invoice Saved!");
+    }
+
+    localStorage.setItem(
+        "invoiceHistory",
+        JSON.stringify(history)
+    );
+}
+
+/* SHOW HISTORY */
+
+function showHistory() {
+
+    let historyBox =
+    document.getElementById("historyBox");
+
+    let historyList =
+    document.getElementById("historyList");
+
+    historyBox.style.display = "block";
+
+    let history =
+    JSON.parse(localStorage.getItem("invoiceHistory")) || [];
+
+    historyList.innerHTML = "";
+
+    history.forEach((invoice, index) => {
+
+        historyList.innerHTML += `
+
+            <div class="history-card">
+
+                <b>Invoice No:</b>
+                ${invoice.invoiceNo}<br>
+
+                <b>Messrs:</b>
+                ${invoice.messrs}<br>
+
+                <b>Date:</b>
+                ${invoice.date}<br>
+
+                <b>Total:</b>
+                ₹ ${invoice.grandTotal}<br><br>
+
+                <button onclick="loadInvoice(${index})">
+                Open
+                </button>
+
+                <button onclick="deleteInvoice(${index})">
+                Delete
+                </button>
+
+            </div>
+        `;
+    });
+}
+
+/* LOAD OLD */
+
+function loadInvoice(index) {
+
+    let history =
+    JSON.parse(localStorage.getItem("invoiceHistory")) || [];
+
+    let invoice = history[index];
+
+    document.getElementById("messrsInput").value =
+    invoice.messrs;
+
+    document.getElementById("dateInput").value =
+    invoice.date;
+
+    document.getElementById("invoiceInput").value =
+    invoice.invoiceNo;
+
+    document.getElementById("grandTotal").value =
+    invoice.grandTotal;
+
+    let table =
+    document.getElementById("table");
+
+    while(table.rows.length > 1) {
+
+        table.deleteRow(1);
+    }
+
+    count = 0;
+
+    invoice.rows.forEach(r => {
+
+        addRow(r);
+    });
+
+    alert("Invoice Loaded!");
+}
+
+/* DELETE */
+
+function deleteInvoice(index) {
+
+    let history =
+    JSON.parse(localStorage.getItem("invoiceHistory")) || [];
+
+    history.splice(index, 1);
+
+    localStorage.setItem(
+        "invoiceHistory",
+        JSON.stringify(history)
+    );
+
+    showHistory();
+}
+
+/* CLEAR CURRENT */
+
+function clearCurrent() {
+
+    document.getElementById("messrsInput").value = "";
+
+    document.getElementById("dateInput").value = "";
+
+    document.getElementById("invoiceInput").value = "";
+
+    document.getElementById("grandTotal").value = "";
+
+    let table =
+    document.getElementById("table");
+
+    while(table.rows.length > 1) {
+
+        table.deleteRow(1);
+    }
+
+    count = 0;
+
+    addRow();
+}
+
+/* START */
+
 addRow();
+
 </script>
 
 </body>
